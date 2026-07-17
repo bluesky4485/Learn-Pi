@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" role="img" aria-labelledby="title desc">
+  <title id="title">Agent loop overview</title>
+  <desc id="desc">User prompt flows into messages, LLM, optional tool use, then back or return text.</desc>
+  <rect width="720" height="280" rx="12" fill="#252525"/>
+  <rect x="1" y="1" width="718" height="278" rx="11" fill="none" stroke="rgba(255,255,255,0.08)"/>
+  <!-- nodes -->
+  <rect x="40" y="110" width="100" height="48" rx="8" fill="#3d3570" stroke="#7c6df0"/>
+  <text x="90" y="139" text-anchor="middle" fill="#dcddde" font-family="system-ui,sans-serif" font-size="14" font-weight="600">User</text>
+  <rect x="200" y="110" width="120" height="48" rx="8" fill="#2a2a2a" stroke="#7c6df0"/>
+  <text x="260" y="139" text-anchor="middle" fill="#dcddde" font-family="system-ui,sans-serif" font-size="14" font-weight="600">messages[]</text>
+  <rect x="380" y="110" width="100" height="48" rx="8" fill="#3d3570" stroke="#7c6df0"/>
+  <text x="430" y="139" text-anchor="middle" fill="#dcddde" font-family="system-ui,sans-serif" font-size="14" font-weight="600">LLM</text>
+  <rect x="540" y="40" width="140" height="48" rx="8" fill="#2a2a2a" stroke="#68b984"/>
+  <text x="610" y="69" text-anchor="middle" fill="#dcddde" font-family="system-ui,sans-serif" font-size="13" font-weight="600">tool_use → tools</text>
+  <rect x="540" y="180" width="140" height="48" rx="8" fill="#2a2a2a" stroke="#999"/>
+  <text x="610" y="209" text-anchor="middle" fill="#dcddde" font-family="system-ui,sans-serif" font-size="13" font-weight="600">text → return</text>
+  <!-- arrows -->
+  <path d="M140 134 H200" stroke="#999" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <path d="M320 134 H380" stroke="#999" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <path d="M480 120 C510 120 510 64 540 64" stroke="#68b984" stroke-width="2" fill="none" marker-end="url(#g)"/>
+  <path d="M540 64 C500 64 480 90 480 110" stroke="#68b984" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+  <path d="M480 148 C510 148 510 204 540 204" stroke="#999" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#999"/>
+    </marker>
+    <marker id="g" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#68b984"/>
+    </marker>
+  </defs>
+  <text x="360" y="250" text-anchor="middle" fill="#666" font-family="system-ui,sans-serif" font-size="12">Model decides · Harness executes · Loop stays constant</text>
+</svg>

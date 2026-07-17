@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--
+			GitHub Pages base path:
+			- Leave empty when project-intro is the Pages root (default workflow).
+			- For project sites served under /repo-name/, set e.g. content="/repo-name/"
+		-->
+		<meta name="site-base" content="" />
+		<meta
+			name="description"
+			content="Learn Pi — progressive harness engineering tutorial for the Pi coding agent. 15 lessons from agent loop to extensions, packages, and philosophy."
+		/>
+		<meta name="theme-color" content="#1e1e1e" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+		<meta name="color-scheme" content="dark light" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Learn Pi · Harness Tutorial" />
+		<meta
+			property="og:description"
+			content="Agency comes from the model. Agent product = Model + Harness. Progressive tutorial for Pi."
+		/>
+		<meta property="og:locale" content="zh_CN" />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content="Learn Pi · Harness Tutorial" />
+		<meta
+			name="twitter:description"
+			content="Progressive harness engineering tutorial for the Pi coding agent."
+		/>
+		<title>Learn Pi · Harness Tutorial</title>
+		<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+		<link rel="canonical" href="./" />
+		<link rel="preload" href="assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="assets/fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+		<script>
+			try {
+				const storedPreference = localStorage.getItem("learn-pi-theme");
+				const preference = ["system", "light", "dark"].includes(storedPreference)
+					? storedPreference
+					: "system";
+				const theme = preference === "system"
+					? (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+					: preference;
+				document.documentElement.dataset.theme = theme;
+				document.documentElement.dataset.themePreference = preference;
+			} catch {}
+		</script>
+		<link rel="stylesheet" href="styles.css" />
+		<script defer src="assets/vendor/mermaid.min.js"></script>
+	</head>
+	<body>
+		<a class="skip-link" href="#main-content">Skip to content</a>
+		<div class="sidebar-overlay" aria-hidden="true"></div>
+
+		<div class="app">
+			<aside class="sidebar" id="sidebar" aria-label="Vault">
+				<div class="sidebar-header">
+					<div class="logo" aria-hidden="true">π</div>
+					<div class="logo-copy">
+						<div class="logo-text" translate="no">Learn Pi</div>
+						<div class="logo-sub">Harness · 15 lessons</div>
+					</div>
+					<button
+						type="button"
+						class="icon-btn sidebar-collapse"
+						id="sidebar-collapse"
+						aria-label="隐藏侧栏"
+						title="隐藏侧栏"
+					>
+						<span aria-hidden="true">‹</span>
+					</button>
+				</div>
+
+				<div class="progress-bar-wrap">
+					<button
+						type="button"
+						class="progress-jump"
+						id="progress-jump"
+						title="Jump to next incomplete lesson"
+					>
+						<div class="progress-meta">
+							<span>Progress</span>
+							<span id="progress-label">0 / 15</span>
+						</div>
+						<div class="progress-track" aria-hidden="true">
+							<div class="progress-fill" id="progress-fill"></div>
+						</div>
+						<div class="progress-next" id="progress-next">Start with s01</div>
+					</button>
+				</div>
+
+				<div class="sidebar-search">
+					<label class="visually-hidden" for="nav-filter">Filter lessons</label>
+					<span class="icon" aria-hidden="true">
+						<svg
+							width="14"
+							height="14"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<circle cx="11" cy="11" r="7" />
+							<path d="M20 20l-3-3" />
+						</svg>
+					</span>
+					<input
+						id="nav-filter"
+						type="search"
+						placeholder="Filter lessons…"
+						autocomplete="off"
+						enterkeyhint="search"
+					/>
+				</div>
+
+				<nav class="nav-section" aria-label="Lessons">
+					<div class="nav-label">Vault</div>
+					<a class="nav-item active" data-nav="home" href="#home">
+						<span class="sid">·</span>
+						<span>Home</span>
+					</a>
+					<div class="nav-label">Lessons</div>
+					<div id="nav-lessons"></div>
+					<div class="nav-filter-empty" id="nav-filter-empty" hidden>
+						No matches
+						<button type="button" class="btn ghost" id="nav-filter-clear">Clear</button>
+					</div>
+				</nav>
+
+				<div class="sidebar-footer">
+					<button
+						type="button"
+						class="icon-btn"
+						id="open-palette"
+						title="Command palette"
+						aria-haspopup="dialog"
+						aria-controls="palette-backdrop"
+						aria-expanded="false"
+					>
+						<span>Quick open</span>
+						<span class="kbd" data-mod-kbd>Ctrl+K</span>
+					</button>
+					<button type="button" class="icon-btn" id="theme-toggle" aria-label="切换主题模式">
+						主题 · 系统
+					</button>
+					<button
+						type="button"
+						class="icon-btn"
+						id="open-shortcuts"
+						aria-label="键盘快捷键"
+						aria-haspopup="dialog"
+						aria-controls="shortcuts-backdrop"
+						aria-expanded="false"
+						title="键盘快捷键"
+					>
+						?
+					</button>
+				</div>
+				<div
+					class="sidebar-resizer"
+					id="sidebar-resizer"
+					role="separator"
+					tabindex="0"
+					aria-label="调整侧栏宽度"
+					aria-orientation="vertical"
+					aria-valuemin="220"
+					aria-valuemax="420"
+					aria-valuenow="280"
+					title="左右拖动调整侧栏宽度"
+				></div>
+			</aside>
+
+			<div class="main">
+				<header class="topbar">
+					<div class="breadcrumb">
+						<button
+							type="button"
+							class="icon-btn menu-toggle"
+							id="menu-toggle"
+							aria-label="隐藏侧栏"
+							aria-expanded="false"
+							aria-controls="sidebar"
+						>
+							<span aria-hidden="true">☰</span>
+						</button>
+						<span style="color: var(--text-faint)" translate="no">learn-pi</span>
+						<span style="color: var(--text-faint)">/</span>
+						<span class="current" id="breadcrumb-current">Home</span>
+					</div>
+					<div class="topbar-actions">
+						<button
+							type="button"
+							class="btn outline-toggle"
+							id="outline-toggle"
+							aria-expanded="false"
+							aria-controls="page-outline"
+						>
+							本页大纲
+						</button>
+						<span class="badge">v0.80 · tutorial</span>
+						<a
+							class="btn"
+							href="https://pi.dev"
+							target="_blank"
+							rel="noopener noreferrer"
+							translate="no"
+							>pi.dev</a
+						>
+					</div>
+				</header>
+
+				<main class="content" id="main-content">
+					<!-- HOME -->
+					<section class="view active" data-view="home" id="home">
+						<div class="meta-row">
+							<span class="badge accent">Tutorial</span>
+							<span class="badge ok">Obsidian UI</span>
+							<span class="badge">15 progressive lessons</span>
+						</div>
+						<h1>Learn Pi</h1>
+						<p class="lead">
+							<strong
+								>Agency 来自模型。Agent 产品 = Model +
+								Harness。</strong
+							><br />
+						</p>
+
+						<div class="motto">
+							<div class="label">Thesis</div>
+							<blockquote>
+								“Adapt pi to your workflows, not the other way
+								around.”
+							</blockquote>
+							<p class="explain">
+								模型是司机；Pi
+								是车。你学的是造车与改装，不是伪造智能。
+							</p>
+						</div>
+
+						<div class="link-strip" id="home-cta">
+							<a class="btn primary" id="continue-btn" href="#s01">
+								Start s01 →
+							</a>
+							<a
+								class="btn"
+								href="https://pi.dev/docs/latest"
+								target="_blank"
+								rel="noopener noreferrer"
+								>Official docs</a
+							>
+							<a
+								class="btn"
+								href="https://github.com/earendil-works/pi"
+								target="_blank"
+								rel="noopener noreferrer"
+								>earendil-works/pi</a
+							>
+						</div>
+						<p class="continue-hint" id="continue-hint" hidden></p>
+
+						<h2>Mindshift</h2>
+						<div class="grid-2">
+							<a class="card interactive" href="#s01">
+								<div class="card-title">Model = agency</div>
+								<p class="card-desc">
+									感知、推理、行动的能力来自训练，不是 if-else
+									工作流图。
+								</p>
+							</a>
+							<a class="card interactive" href="#s02">
+								<div class="card-title">Harness = environment</div>
+								<p class="card-desc">
+									Tools · Knowledge · Observation · Action ·
+									Permissions。Pi 提供可扩展的编码环境。
+								</p>
+							</a>
+						</div>
+
+						<div class="pattern"><span class="hi">Pi</span> = one agent loop +
+tools(read, write, edit, bash) + sessions / tree /
+compaction + AGENTS.md context + extensions · skills
+· themes · packages + multi-provider models
+(models.json) + interactive | print | JSON | RPC |
+SDK The model decides. The harness executes. The
+loop stays constant. Mechanisms change.</div>
+
+						<div class="diagram-wrap" data-mermaid-id="home">
+							<div class="diagram-header">
+								<button type="button" class="diagram-toggle" data-section-toggle aria-expanded="true" aria-controls="diagram-panel-home">
+									<span class="section-chevron" aria-hidden="true">▾</span>
+									<span>总览 · Model + Harness</span>
+								</button>
+								<div class="diagram-header-actions">
+									<button type="button" class="icon-btn diagram-expand" data-diagram-expand aria-label="缩放总览图" title="聚焦查看，可放大或缩小">缩放 ↗</button>
+								</div>
+							</div>
+							<div class="diagram-host" id="diagram-panel-home"></div>
+						</div>
+
+						<h2>Learning path</h2>
+						<p class="lead" style="margin-bottom: 0.5rem">
+							主线：行动 → 会话与知识 → 扩展 → 集成 → 安全与哲学。
+						</p>
+						<div class="stage-grid" id="stage-grid">
+							<div class="stage" data-stage="1">
+								<button type="button" class="stage-toggle" aria-expanded="true" aria-controls="stage-list-1">
+									<h3>1 · 让 Agent 能行动</h3>
+									<span class="stage-progress" data-stage-progress="1"></span>
+								</button>
+								<ul id="stage-list-1">
+									<li>
+										<a href="#s01">s01 Agent Loop</a>
+										— 循环不变量
+									</li>
+									<li>
+										<a href="#s02">s02 Tools</a>
+										— 四工具 + registerTool
+									</li>
+									<li>
+										<a href="#s03">s03 Install & Auth</a>
+										— 装起来、登进去
+									</li>
+									<li>
+										<a href="#s04">s04 Models</a>
+										— 自定义 URL / Key
+									</li>
+								</ul>
+							</div>
+							<div class="stage" data-stage="2">
+								<button type="button" class="stage-toggle" aria-expanded="true" aria-controls="stage-list-2">
+									<h3>2 · 会话与工作台</h3>
+									<span class="stage-progress" data-stage-progress="2"></span>
+								</button>
+								<ul id="stage-list-2">
+									<li>
+										<a href="#s05">s05 Sessions</a>
+										— 树、分支、恢复
+									</li>
+									<li>
+										<a href="#s06">s06 Context</a>
+										— AGENTS.md
+									</li>
+									<li>
+										<a href="#s07">s07 TUI & Themes</a>
+										— 配色非壁纸
+									</li>
+								</ul>
+							</div>
+							<div class="stage" data-stage="3">
+								<button type="button" class="stage-toggle" aria-expanded="true" aria-controls="stage-list-3">
+									<h3>3 · 扩展与分发</h3>
+									<span class="stage-progress" data-stage-progress="3"></span>
+								</button>
+								<ul id="stage-list-3">
+									<li>
+										<a href="#s08">s08 Extensions</a>
+										— 钩子不改循环
+									</li>
+									<li>
+										<a href="#s09">s09 Skills</a>
+										— 按需知识
+									</li>
+									<li>
+										<a href="#s10">s10 Packages</a>
+										— pi install
+									</li>
+								</ul>
+							</div>
+							<div class="stage" data-stage="4">
+								<button type="button" class="stage-toggle" aria-expanded="true" aria-controls="stage-list-4">
+									<h3>4 · 集成与架构</h3>
+									<span class="stage-progress" data-stage-progress="4"></span>
+								</button>
+								<ul id="stage-list-4">
+									<li>
+										<a href="#s11">s11 Run Modes</a>
+										— print / RPC / SDK
+									</li>
+									<li>
+										<a href="#s12">s12 Architecture</a>
+										— monorepo 分层
+									</li>
+								</ul>
+							</div>
+							<div class="stage" data-stage="5">
+								<button type="button" class="stage-toggle" aria-expanded="true" aria-controls="stage-list-5">
+									<h3>5 · 长任务与边界</h3>
+									<span class="stage-progress" data-stage-progress="5"></span>
+								</button>
+								<ul id="stage-list-5">
+									<li>
+										<a href="#s13">s13 Compaction</a>
+										— 腾出上下文
+									</li>
+									<li>
+										<a href="#s14">s14 Trust & Safety</a>
+										— 信任与沙箱
+									</li>
+								</ul>
+							</div>
+							<div class="stage" data-stage="6">
+								<button type="button" class="stage-toggle" aria-expanded="true" aria-controls="stage-list-6">
+									<h3>6 · 收束</h3>
+									<span class="stage-progress" data-stage-progress="6"></span>
+								</button>
+								<ul id="stage-list-6">
+									<li>
+										<a href="#s15">s15 Philosophy</a>
+										— 不 fork，改装车
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<h2>All chapters</h2>
+						<div id="home-lesson-grid" class="grid-2"></div>
+
+						<h2>How to read</h2>
+						<ul class="feature-list">
+							<li>
+								<span class="mark">1</span
+								><span
+									>按 s01 → s15 顺序；每课一个 motto +
+									可复制命令。</span
+								>
+							</li>
+							<li>
+								<span class="mark">2</span
+								><span
+									>侧栏筛选 /
+									<span class="kbd" data-mod-kbd>Ctrl+K</span>
+									快速跳转；「标记完成」记进度（localStorage）。</span
+								>
+							</li>
+							<li>
+								<span class="mark">3</span
+								><span
+									>深潜内容在
+									<code>&lt;details&gt;</code>
+									折叠里，按需展开。截图点开可放大。</span
+								>
+							</li>
+							<li>
+								<span class="mark">4</span
+								><span
+									>这是产品 / harness 教程，不是从零手写 loop
+									的 Python 课。</span
+								>
+							</li>
+						</ul>
+
+						<div class="callout">
+							<div class="callout-icon">※</div>
+							<p>
+								对照阅读：
+								<a
+									href="https://github.com/shareAI-lab/learn-claude-code"
+									target="_blank"
+									rel="noopener noreferrer"
+									>learn-claude-code</a
+								>
+								教「从 0 造 harness」；
+								<strong>Learn Pi</strong> 教「用 /
+								扩展一个已存在的最小 harness 产品」。
+							</p>
+						</div>
+
+						<p class="page-footer">
+							Learn Pi by paradox ·
+							<span id="year">2026</span>
+						</p>
+					</section>
+
+					<div id="lessons-host"></div>
+				</main>
+				<aside class="page-outline" id="page-outline" aria-label="本页大纲" hidden>
+					<div class="page-outline-header">
+						<span>On this page</span>
+						<button type="button" class="icon-btn page-outline-close" id="outline-close" aria-label="关闭本页大纲">×</button>
+					</div>
+					<nav class="page-outline-list" id="page-outline-list" aria-label="标题列表"></nav>
+				</aside>
+			</div>
+		</div>
+
+		<div
+			class="palette-backdrop"
+			id="palette-backdrop"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="palette-title"
+			hidden
+		>
+			<div class="palette">
+				<div class="palette-heading">
+					<span id="palette-title">命令与全文搜索</span>
+					<span class="palette-hint"><span class="kbd">↑↓</span> 选择 · <span class="kbd">Enter</span> 执行</span>
+				</div>
+				<label class="visually-hidden" for="palette-input">搜索课程内容或输入命令</label>
+				<input
+					id="palette-input"
+					type="search"
+					placeholder="搜索全文，或输入 > 查看命令…"
+					autocomplete="off"
+					role="combobox"
+					aria-autocomplete="list"
+					aria-controls="palette-list"
+					aria-expanded="false"
+				/>
+				<div class="palette-list" id="palette-list" role="listbox"></div>
+			</div>
+		</div>
+
+		<div
+			class="lightbox"
+			id="lightbox"
+			role="dialog"
+			aria-modal="true"
+			aria-label="Image preview"
+			hidden
+		>
+			<button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close">
+				×
+			</button>
+			<figure class="lightbox-figure">
+				<img id="lightbox-img" alt="" />
+				<figcaption id="lightbox-caption"></figcaption>
+			</figure>
+		</div>
+
+		<div
+			class="diagram-lightbox"
+			id="diagram-lightbox"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="diagram-lightbox-title"
+			hidden
+		>
+			<div class="diagram-lightbox-bar">
+				<div>
+					<div class="diagram-lightbox-kicker">MERMAID · 聚焦查看</div>
+					<div class="diagram-lightbox-title" id="diagram-lightbox-title">流程图</div>
+				</div>
+				<div class="diagram-lightbox-actions" aria-label="图表缩放控制">
+					<button type="button" class="icon-btn" id="diagram-zoom-out" aria-label="缩小图表">−</button>
+					<button type="button" class="diagram-zoom-value" id="diagram-zoom-reset" title="恢复 100%">100%</button>
+					<button type="button" class="icon-btn" id="diagram-zoom-in" aria-label="放大图表">＋</button>
+					<button type="button" class="icon-btn diagram-lightbox-close" id="diagram-lightbox-close" aria-label="关闭图表">×</button>
+				</div>
+			</div>
+			<div class="diagram-lightbox-canvas" id="diagram-lightbox-canvas">
+				<div class="diagram-lightbox-stage" id="diagram-lightbox-stage"></div>
+			</div>
+		</div>
+
+		<div
+			class="shortcuts-backdrop"
+			id="shortcuts-backdrop"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="shortcuts-title"
+			hidden
+		>
+			<div class="shortcuts">
+				<div class="shortcuts-header">
+					<span id="shortcuts-title">键盘快捷键</span>
+					<button
+						type="button"
+						class="icon-btn"
+						id="shortcuts-close"
+						aria-label="关闭快捷键面板"
+					>
+						×
+					</button>
+				</div>
+				<table class="shortcuts-table">
+					<tbody>
+						<tr>
+							<td><span class="kbd" data-mod-kbd>Ctrl+K</span></td>
+							<td>命令面板（跳转 / 执行命令）</td>
+						</tr>
+						<tr>
+							<td><span class="kbd">←</span> <span class="kbd">→</span></td>
+							<td>上一课 / 下一课</td>
+						</tr>
+						<tr>
+							<td><span class="kbd">M</span></td>
+							<td>标记当前课完成 / 取消</td>
+						</tr>
+						<tr>
+							<td><span class="kbd">+</span> <span class="kbd">−</span> <span class="kbd">0</span></td>
+							<td>Mermaid 放大 / 缩小 / 恢复 100%</td>
+						</tr>
+						<tr>
+							<td><span class="kbd">?</span></td>
+							<td>打开本面板</td>
+						</tr>
+						<tr>
+							<td><span class="kbd">Esc</span></td>
+							<td>关闭浮层 / 侧栏</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+		<script src="app.js" defer></script>
+	</body>
+</html>

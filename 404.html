@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Redirecting… · Learn Pi</title>
+		<script>
+			// GitHub Pages: unknown paths → index.html, preserve hash / recover lesson id.
+			(function () {
+				var path = location.pathname.replace(/\/404\.html?$/i, "/");
+				// Project site: /repo/... → root /repo/
+				// User site root: /... → /
+				var parts = path.split("/").filter(Boolean);
+				var root = "/";
+				if (location.hostname.endsWith("github.io") && parts.length >= 1) {
+					// First segment is usually the repo name for project pages
+					root = "/" + parts[0] + "/";
+				} else if (parts.length) {
+					// Custom domain or subpath: strip last segment (missing file)
+					parts.pop();
+					root = parts.length ? "/" + parts.join("/") + "/" : "/";
+				}
+				var hash = location.hash || "";
+				var last = path.replace(/\/+$/, "").split("/").pop() || "";
+				if (last && last !== "404.html" && last !== "index.html" && !hash) {
+					hash = "#" + last.replace(/\.html$/i, "");
+				}
+				location.replace(root + "index.html" + hash);
+			})();
+		</script>
+		<meta http-equiv="refresh" content="0; url=./index.html" />
+		<link rel="canonical" href="./index.html" />
+	</head>
+	<body>
+		<p><a href="./index.html">Return to Learn Pi</a></p>
+	</body>
+</html>
