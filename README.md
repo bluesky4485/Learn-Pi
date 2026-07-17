@@ -130,12 +130,18 @@ When updating a vendored asset, keep the filename stable or update both `index.h
 
 ## Deploy to GitHub Pages
 
-1. Configure **Settings → Pages → Build and deployment → GitHub Actions**.
-2. Upload this directory as the Pages artifact, including `.nojekyll`.
-3. For a project site hosted below a repository path, set the base once in `index.html`:
+The repository includes `.github/workflows/deploy-pages.yml`. Every push to `main` deploys the static site automatically with GitHub Actions.
+
+- Repository: `https://github.com/1parado/Learn-Pi`
+- Site: `https://1parado.github.io/Learn-Pi/`
+- Manual redeploy: **Actions → Deploy GitHub Pages → Run workflow**
+
+The workflow enables Pages, uploads the repository as a static artifact, and deploys it to the `github-pages` environment. `.nojekyll` is included.
+
+For a fork or renamed repository hosted below another project path, you can optionally set the base explicitly in `index.html`:
 
 ```html
 <meta name="site-base" content="/repo-name/" />
 ```
 
-Leave the value empty when this directory is served as the site root.
+The current empty value is intentional: the application detects the GitHub Pages project path at runtime and continues to work during local preview.
