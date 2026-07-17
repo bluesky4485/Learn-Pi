@@ -145,3 +145,7 @@ For a fork or renamed repository hosted below another project path, you can opti
 ```
 
 The current empty value is intentional: the application detects the GitHub Pages project path at runtime and continues to work during local preview.
+
+
+### 友链
+学AI，上[L站](https://linux.do/)
